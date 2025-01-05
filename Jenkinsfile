@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             agent {
-                any {
+                docker {
                     image 'python:3-alpine'
                 }
             }
@@ -13,16 +13,19 @@ pipeline {
         }
         stage('Test') { 
             agent {
-                any {
-                    image 'qnib/pytest' 
+                docker {
+                    image 'python:3-alpine'
                 }
             }
             steps {
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py' 
+                sh '''
+                    pip install pytest
+                    py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+                '''
             }
             post {
                 always {
-                    junit 'test-reports/results.xml' 
+                    junit 'test-reports/results.xml'
                 }
             }
         }
