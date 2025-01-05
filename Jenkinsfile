@@ -31,13 +31,12 @@ pipeline {
         }
         stage('Deliver') {
             agent {
-                docker {
+                none {
                     image 'cdrx/pyinstaller-linux:python2'
                 }
             }
             steps {
                 sh '''
-                    pip install pyinstaller
                     pyinstaller --onefile sources/add2vals.py
                 '''
             }
