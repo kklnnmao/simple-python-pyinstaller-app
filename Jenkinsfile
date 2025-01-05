@@ -30,15 +30,16 @@ pipeline {
             }
         }
         stage('Deliver') {
-            agent {
-                none {
-                    image 'cdrx/pyinstaller-linux:python2'
-                }
-            }
+            agent none
             steps {
-                sh '''
-                    pyinstaller --onefile sources/add2vals.py
-                '''
+                node {
+                    docker.image('cdrx/pyinstaller-linux:python2').inside {
+                        sh '''
+                            pip install pyinstaller
+                            pyinstaller --onefile sources/add2vals.py
+                        '''
+                    }
+                }
             }
         }
     }
